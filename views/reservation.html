@@ -49,8 +49,8 @@
             <p>공연장: {{show.venue}}</p>
             <p>잔여석: {{show.remainingSeats}} / {{show.totalSeats}}</p>
             <p>가격: {{show.price}}원</p>
-            <button onclick="selectShow('{{show.id}}', '{{show.title}}', '{{show.price}}')" >예약하기</button>
-        </div>
+            <button onclick="location.href='/shows/reservation/{{show.id}}'">예약하기</button>       
+         </div>
         {% endfor %}
     </div>
 

@@ -19,16 +19,16 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-// 공연 예약 페이지 렌더링
-router.get('/reservation', async (req, res, next) => {
+// 공연 상세 예약 페이지 렌더링
+router.get('/reservation/:showId', async (req, res, next) => {
     try {
-        const shows = await Show.findAll({
-            where: {
-                status: ['UPCOMING', 'ONGOING']
-            },
-            order: [['performanceDate', 'ASC']]
+        const show = await Show.findOne({
+            where: { id: req.params.showId }
         });
-        res.render('reservation', { shows }); // reservation.html 뷰를 렌더링
+        if (!show) {
+            return res.status(404).send('공연을 찾을 수 없습니다.');
+        }
+        res.render('reservationDetail', { show }); // reservationDetail.html 뷰를 렌더링
     } catch (err) {
         console.error(err);
         next(err);
