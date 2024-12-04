@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>공연 예약 시스템</title>
+    <style>
+        .show-list {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+        .show-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .reservation-form {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>공연 예약 시스템</h1>
+
+    <div class="show-list">
+        <h2>공연 목록</h2>
+        {% for show in shows %}
+        <div class="show-item">
+            <h3>{{show.title}}</h3>
+            <p>공연 날짜: {{show.performanceDate}}</p>
+            <p>공연장: {{show.venue}}</p>
+            <p>잔여석: {{show.remainingSeats}} / {{show.totalSeats}}</p>
+            <p>가격: {{show.price}}원</p>
+            <button onclick="selectShow('{{show.id}}', '{{show.title}}', '{{show.price}}')" >예약하기</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="reservation-form">
+        <h2>예약하기</h2>
+        <form id="reservationForm" action="/shows/reserve" method="POST">
+            <input type="hidden" id="showId" name="showId">
+            
+            <div class="form-group">
+                <label>선택한 공연:</label>
+                <span id="selectedShow">선택된 공연이 없습니다</span>
+            </div>
+
+            <div class="form-group">
+                <label for="seatCount">예매 좌석 수:</label>
+                <input type="number" id="seatCount" name="seatCount" min="1" max="10" required>
+            </div>
+
+            <div class="form-group">
+                <label>총 결제 금액:</label>
+                <span id="totalAmount">0</span>원
+            </div>
+
+            <button type="submit">예약하기</button>
+        </form>
+    </div>
+
+    <script>
+        function selectShow(showId, title, price) {
+            document.getElementById('showId').value = showId;
+            document.getElementById('selectedShow').textContent = title;
+            
+            const seatCount = document.getElementById('seatCount');
+            seatCount.onchange = function() {
+                const total = this.value * price;
+                document.getElementById('totalAmount').textContent = total.toLocaleString();
+            }
+        }
+    </script>
+</body>
+</html> 
