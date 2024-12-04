@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Show, Reservation, User, sequelize } = require('../models');
-const Sequelize = require('sequelize');
+const { Show } = require('../models');
 const { isLoggedIn } = require('../middlewares/auth');
 
 // 공연 목록 조회
@@ -14,6 +13,22 @@ router.get('/', async (req, res, next) => {
             order: [['performanceDate', 'ASC']]
         });
         res.json(shows);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+});
+
+// 공연 예약 페이지 렌더링
+router.get('/reservation', async (req, res, next) => {
+    try {
+        const shows = await Show.findAll({
+            where: {
+                status: ['UPCOMING', 'ONGOING']
+            },
+            order: [['performanceDate', 'ASC']]
+        });
+        res.render('reservation', { shows }); // reservation.html 뷰를 렌더링
     } catch (err) {
         console.error(err);
         next(err);
@@ -38,9 +53,8 @@ router.post('/:showId/reserve', isLoggedIn, async (req, res, next) => {
             throw new Error('잔여 좌석이 부족합니다.');
         }
 
-        // 테스트를 위해 임시로 userId를 하드코딩
         const reservation = await Reservation.create({
-            userId: req.body.userId || 'testuser', // 테스트용 임시 userId
+            userId: req.body.userId || 'testuser',
             showId: show.id,
             seatCount: req.body.seatCount,
             totalAmount: show.price * req.body.seatCount
@@ -59,4 +73,4 @@ router.post('/:showId/reserve', isLoggedIn, async (req, res, next) => {
     }
 });
 
-module.exports = router; 
+module.exports = router;
