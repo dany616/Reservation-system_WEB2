@@ -19,6 +19,21 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+// 공연 예약 페이지 렌더링
+router.get('/reservation', async (req, res, next) => {
+    try {
+        const shows = await Show.findAll({
+            where: {
+                status: ['UPCOMING', 'ONGOING']
+            },
+            order: [['performanceDate', 'ASC']]
+        });
+        res.render('reservation', { shows }); // reservation.html 뷰를 렌더링
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+});
 
 
 
