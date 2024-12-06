@@ -19,6 +19,10 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+
+
+
+
 // 공연 상세 예약 페이지 렌더링
 router.get('/reservation/:showId', async (req, res, next) => {
     try {
